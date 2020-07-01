@@ -1,0 +1,10 @@
+.inactive {
+    align-items: center;
+    display: flex;
+    height: 82px;
+}
+
+.inactive span {
+    font-size: 19px;
+    font-weight: 600;
+}

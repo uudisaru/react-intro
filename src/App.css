@@ -1,0 +1,17 @@
+.app {
+  display: flex;
+  width: 100%;
+}
+
+.app .contact-list {
+  flex: 1 1 auto;
+  max-width: 200px;
+  min-width: 100px;
+  margin: 15px;
+}
+
+.app .contact-details {
+  flex: 1 1 auto;
+  margin: 15px;
+  max-width: 1500px;
+}
