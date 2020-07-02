@@ -2,7 +2,11 @@ import React, { useEffect, useReducer, useState } from "react";
 import "./App.css";
 import ContactList from "./components/list/ContactList";
 import ContactDetails from "./components/details/ContactDetails";
-import { fetchContacts } from "./services/contacts";
+import {
+  createContact,
+  fetchContacts,
+  updateContact,
+} from "./services/contacts";
 
 const initialState = {
   contacts: [],
@@ -14,34 +18,37 @@ function reducer(state, action) {
     return {
       contacts: action.payload,
     };
-  } else if (action.type === "save") {
-    if (!!action.payload.id) {
-      return {
-        contacts: state.contacts.map((contact) => {
-          if (contact.id === action.payload.id) {
-            return action.payload;
-          }
+  } else if (action.type === "create") {
+    return {
+      contacts: [
+        ...state.contacts,
+        action.payload,
+      ],
+    };
+  } else if (action.type === "update") {
+    return {
+      contacts: state.contacts.map((contact) => {
+        if (contact.id === action.payload.id) {
+          return action.payload;
+        }
 
-          return contact;
-        }),
-        nextId: state.nextId,
-      };
-    } else {
-      const id = state.nextId;
-      return {
-        contacts: [
-          ...state.contacts,
-          {
-            ...action.payload,
-            id,
-          },
-        ],
-        nextId: id + 1,
-      };
-    }
+        return contact;
+      }),
+      nextId: state.nextId,
+    };
   }
 
   throw new Error();
+}
+
+async function save(contact, dispatch) {
+  if (contact.id) {
+    const response = await updateContact(contact);
+    dispatch({ type: "update", payload: response.data });
+  } else {
+    const response = await createContact(contact);
+    dispatch({ type: "create", payload: response.data });
+  }
 }
 
 function App() {
@@ -54,7 +61,6 @@ function App() {
     }
     fetchData();
   }, [dispatch]);
-  console.debug("state:", state);
 
   return (
     <>
@@ -68,7 +74,7 @@ function App() {
         <ContactDetails
           cancel={() => setSelected(undefined)}
           contact={selected}
-          save={(contact) => dispatch({ type: "save", payload: contact })}
+          save={async (contact) => await save(contact, dispatch)}
         />
       </main>
     </>
