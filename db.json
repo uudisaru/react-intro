@@ -1,0 +1,16 @@
+{
+  "contacts": [
+    {
+      "email": "tim.cook@apple.com",
+      "firstName": "Tim",
+      "id": 1,
+      "lastName": "Cook"
+    },
+    {
+      "email": "larry.page@google.com",
+      "firstName": "Larry",
+      "id": 2,
+      "lastName": "Page"
+    }
+  ]
+}

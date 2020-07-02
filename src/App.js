@@ -1,28 +1,20 @@
-import React, { useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import "./App.css";
 import ContactList from "./components/list/ContactList";
 import ContactDetails from "./components/details/ContactDetails";
+import { fetchContacts } from "./services/contacts";
 
 const initialState = {
-  contacts: [
-    {
-      email: "tim.cook@apple.com",
-      firstName: "Tim",
-      id: 1,
-      lastName: "Cook",
-    },
-    {
-      email: "larry.page@google.com",
-      firstName: "Larry",
-      id: 2,
-      lastName: "Page",
-    },
-  ],
+  contacts: [],
   nextId: 3,
 };
 
 function reducer(state, action) {
-  if (action.type === "save") {
+  if (action.type === "load") {
+    return {
+      contacts: action.payload,
+    };
+  } else if (action.type === "save") {
     if (!!action.payload.id) {
       return {
         contacts: state.contacts.map((contact) => {
@@ -55,6 +47,15 @@ function reducer(state, action) {
 function App() {
   const [selected, setSelected] = useState(undefined);
   const [state, dispatch] = useReducer(reducer, initialState);
+  useEffect(() => {
+    async function fetchData() {
+      const contacts = await fetchContacts();
+      dispatch({ type: "load", payload: contacts.data });
+    }
+    fetchData();
+  }, [dispatch]);
+  console.debug("state:", state);
+
   return (
     <>
       <header></header>
