@@ -8,3 +8,12 @@
     font-size: 19px;
     font-weight: 600;
 }
+
+.footer {
+    display: flex;
+}
+
+.footer input {
+    margin-right: 7px;
+    width: 120px;
+}

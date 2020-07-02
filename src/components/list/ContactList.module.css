@@ -1,0 +1,15 @@
+.contacts {
+  flex: 1 1 auto;
+  width: 25%;
+  max-width: 300px;
+  margin: 15px;
+}
+
+.contacts ul {
+  list-style-type: none;
+}
+
+.contacts ul > li {
+  border-top: 1px solid #c0c0c0;
+  margin-bottom: 0;
+}

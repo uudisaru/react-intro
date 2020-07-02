@@ -1,4 +1,4 @@
-import React, { useReducer, useCallback } from "react";
+import React, { useReducer, useCallback, useEffect } from "react";
 import styles from "./ContactForm.module.css";
 
 const ContactField = ({
@@ -27,8 +27,14 @@ const ContactField = ({
 
 const initialState = { updated: false, item: {} };
 function reducer(state, action) {
-  console.debug("reducer:", state, action);
   switch (action.type) {
+    case "set":
+      return {
+        item: {
+          ...action.payload,
+        },
+        updated: false,
+      };
     case "update":
       return {
         item: {
@@ -44,8 +50,11 @@ function reducer(state, action) {
   }
 }
 
-const ContactForm = (props) => {
-  const [contact, dispatch] = useReducer(reducer, initialState);
+const ContactForm = ({cancel, contact, save}) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  useEffect(() => {
+    dispatch({type: 'set', payload: contact})
+  }, [contact, dispatch]);
   const updateItem = useCallback(({target}) => {
     const value = target.id === "inactive" ? target.checked : target.value;
     dispatch({
@@ -56,18 +65,21 @@ const ContactForm = (props) => {
 
   return (
     <div className="contact-form">
-      <form>
+      <form onSubmit={(e) => {
+        save(state.item);
+        e.preventDefault();
+      }}>
         <div className="row">
           <ContactField
             fieldName="firstName"
-            item={contact.item}
+            item={state.item}
             label="First name"
             placeholder="John"
             updateItem={updateItem}
           />
           <ContactField
             fieldName="lastName"
-            item={contact.item}
+            item={state.item}
             label="Last name"
             placeholder="Smith"
             updateItem={updateItem}
@@ -76,7 +88,7 @@ const ContactForm = (props) => {
         <div className="row">
           <ContactField
             fieldName="email"
-            item={contact.item}
+            item={state.item}
             label="Email"
             placeholder="test@mailbox.com"
             type="email"
@@ -84,7 +96,7 @@ const ContactForm = (props) => {
           />
           <ContactField
             fieldName="phone"
-            item={contact.item}
+            item={state.item}
             label="Phone"
             placeholder="+372 555 5555"
             updateItem={updateItem}
@@ -107,7 +119,7 @@ const ContactForm = (props) => {
               className="u-full-width"
               id="contactType"
               onChange={updateItem}
-              value={contact.item.contactType}
+              value={state.item.contactType}
             >
               <option></option>
               <option value="1">Acquaintance</option>
@@ -118,12 +130,19 @@ const ContactForm = (props) => {
             </select>
           </div>
         </div>
-        <input
-          className="button-primary"
-          disabled={!contact.updated}
-          type="submit"
-          value={props.item ? "Create" : "Save"}
-        />
+        <div className={styles.footer}>
+          <input
+            type="button"
+            value={"Cancel"}
+            onClick={cancel}
+          />
+          <input
+            className="button-primary"
+            disabled={!state.updated}
+            type="submit"
+            value={contact ? "Save" : "Create"}
+          />
+        </div>
       </form>
     </div>
   );

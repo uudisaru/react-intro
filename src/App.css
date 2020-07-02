@@ -5,8 +5,7 @@
 
 .app .contact-list {
   flex: 1 1 auto;
-  max-width: 200px;
-  min-width: 100px;
+  min-width: 25%;
   margin: 15px;
 }
 
